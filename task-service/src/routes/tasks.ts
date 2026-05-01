@@ -25,7 +25,7 @@ taskRouter.post("/task", async (req, res) => {
 taskRouter.get("/task", async (req, res) => {
   try {
     const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 10;
+    const limit = parseInt(req.query.limit as string) || 5;
 
     const skip = (page - 1) * limit;
 
@@ -41,7 +41,7 @@ taskRouter.get("/task", async (req, res) => {
     res.status(200).json({
       tasks: task,
       page,
-      totalPage: Math.ceil(totalTasks / limit),
+      totalPages: Math.ceil(totalTasks / limit),
       totalTasks,
     });
   } catch (err) {
