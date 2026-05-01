@@ -1,0 +1,10 @@
+{
+  "name": "personal-task-tracker-workspace",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bash scripts/dev.sh",
+    "install:all": "npm install --prefix task-service && npm install --prefix analytics-service && npm install --prefix frontend",
+    "prisma:generate": "npm --prefix task-service run prisma:generate"
+  }
+}

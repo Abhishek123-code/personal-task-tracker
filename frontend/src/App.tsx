@@ -6,7 +6,7 @@ import TaskList from "./componets/taskList";
 import TaskForm from "./componets/taskform";
 
 const TASK_API_URL =
-  import.meta.env.VITE_TASK_API_URL ?? "http://localhost:30001/task";
+  import.meta.env.VITE_TASK_API_URL ?? "http://localhost:3000/task";
 
 type TaskApiResponse = {
   tasks: Task[];

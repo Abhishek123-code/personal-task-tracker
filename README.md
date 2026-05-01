@@ -56,6 +56,26 @@ cd ../analytics-service && npm install
 cd ../frontend && npm install
 ```
 
+Or from the repo root:
+
+```bash
+npm run install:all
+```
+
+Start the full local app from the repo root:
+
+```bash
+npm run dev
+```
+
+This starts:
+
+- Task API on `http://localhost:3000/task`
+- Analytics API on `http://localhost:3001/analytics`
+- Frontend on the Vite URL shown in the terminal, usually `http://localhost:5173`
+
+If you prefer separate terminals, use the commands below.
+
 Generate the Prisma client and start the task service:
 
 ```bash
