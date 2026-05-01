@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  task-service:
+    build:
+      context: ./task-service
+    container_name: task-tracker-task-service
+    ports:
+      - "3000:3000"
+    env_file:
+      # Reads your cluster connection string directly from your local .env file
+      - ./task-service/.env
+    restart: unless-stopped
+
+  analytics-service:
+    build:
+      context: ./analytics-service
+    container_name: task-tracker-analytics-service
+    ports:
+      - "3001:3001"
+    environment:
+      # Uses the internal Docker network to reach the task-service directly
+      - TASK_SERVICE_URL=http://task-service:3000
+    depends_on:
+      - task-service
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: task-tracker-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      # Must use localhost since these URLs are accessed by the user's browser, not internally
+      - VITE_TASK_API_URL=http://localhost:3000/task
+      - VITE_ANALYTICS_API_URL=http://localhost:3001/analytics
+    restart: unless-stopped

@@ -26,7 +26,13 @@ const COLORS = ["#22c55e", "#e2e8f0"]; // Green for completed, light grey for pe
 const ANALYTICS_API_URL =
   import.meta.env.VITE_ANALYTICS_API_URL ?? "http://localhost:3001/analytics";
 
-export default function AnalyticsOverview() {
+type AnalyticsProps = {
+  refreshTrigger?: number;
+};
+
+export default function AnalyticsOverview({
+  refreshTrigger = 0,
+}: AnalyticsProps) {
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -45,7 +51,7 @@ export default function AnalyticsOverview() {
         setError(true);
         setLoading(false);
       });
-  }, []); // Note: In a larger app, we'd poll this or use websockets. For this assessment, load once is fine!
+  }, [refreshTrigger]); // Note: In a larger app, we'd poll this or use websockets. For this assessment, load once is fine!
 
   // UI STATE: Loading
   if (loading)

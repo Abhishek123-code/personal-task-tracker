@@ -120,6 +120,26 @@ docker build -t frontend:latest ./frontend
 
 The `.dockerignore` files keep `node_modules`, `dist`, generated files, and `.env` out of the Docker build context.
 
+## Run Locally with Docker Compose
+
+You can easily run the entire stack (including a local MongoDB database) without manually configuring environment variables using Docker Compose:
+
+```bash
+docker compose up --build
+```
+
+Once started, you can access the services at:
+
+- **Frontend**: `http://localhost:5173`
+- **Task API**: `http://localhost:3000/task`
+- **Analytics API**: `http://localhost:3001/analytics`
+
+To stop the services and safely remove the containers, run:
+
+```bash
+docker compose down
+```
+
 ## Deploy to Local Kubernetes
 
 These steps are intended for Docker Desktop Kubernetes.

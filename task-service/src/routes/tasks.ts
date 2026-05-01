@@ -18,6 +18,7 @@ taskRouter.post("/task", async (req, res) => {
 
     res.status(201).json(task);
   } catch (err) {
+    console.error("Error in POST /task:", err);
     res.status(400).send("Error Creating Task");
   }
 });
@@ -45,6 +46,7 @@ taskRouter.get("/task", async (req, res) => {
       totalTasks,
     });
   } catch (err) {
+    console.error("Error in GET /task:", err);
     res.status(400).send("Error fetching tasks");
   }
 });
@@ -63,6 +65,7 @@ taskRouter.patch("/task/:id", async (req, res) => {
     });
     res.status(200).json(taskUpdate);
   } catch (err) {
+    console.error("Error in PATCH /task/:id:", err);
     res.status(400).send("Error updating task");
   }
 });
@@ -76,6 +79,7 @@ taskRouter.delete("/task/:id", async (req, res) => {
 
     res.status(204).json("Task deleted successfully");
   } catch (err) {
+    console.error("Error in DELETE /task/:id:", err);
     res.status(400).send("Error deleting task");
   }
 });

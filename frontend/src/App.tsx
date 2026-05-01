@@ -19,6 +19,7 @@ function App() {
   const [taskData, setTaskData] = useState<TaskApiResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [refreshAnalytics, setRefreshAnalytics] = useState(0);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -53,6 +54,7 @@ function App() {
           tasks: [response.data, ...taskData.tasks],
           totalTasks: taskData.totalTasks + 1,
         });
+        setRefreshAnalytics((prev) => prev + 1);
       }
     } catch (error) {
       console.error("Error adding task:", error);
@@ -79,6 +81,7 @@ function App() {
             t.id === task.id ? response.data : t,
           ),
         });
+        setRefreshAnalytics((prev) => prev + 1);
       }
     } catch (error) {
       console.error("Error updating task:", error);
@@ -95,6 +98,7 @@ function App() {
           tasks: taskData.tasks.filter((t) => t.id !== taskId),
           totalTasks: taskData.totalTasks - 1,
         });
+        setRefreshAnalytics((prev) => prev + 1);
       }
     } catch (error) {
       console.error("Error deleting task:", error);
@@ -124,7 +128,7 @@ function App() {
         </section>
 
         {/* RIGHT COLUMN */}
-        <AnalyticsOverview />
+        <AnalyticsOverview refreshTrigger={refreshAnalytics} />
       </main>
     </div>
   );
