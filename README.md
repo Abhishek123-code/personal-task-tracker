@@ -9,6 +9,10 @@ A small microservice-based task tracker with:
 - Docker images for each app
 - Kubernetes manifests for local deployment
 
+## Preview
+
+![Task Dashboard preview](docs/preview.png)
+
 ## Project Structure
 
 ```text
