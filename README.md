@@ -11,7 +11,7 @@ A small microservice-based task tracker with:
 
 ## Preview
 
-![Task Dashboard preview](preview.png)
+![Task Dashboard preview](preview.svg)
 
 ## Project Structure
 
