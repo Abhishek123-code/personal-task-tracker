@@ -23,6 +23,9 @@ type AnalyticsData = {
 // Clean styling colors for the pie chart
 const COLORS = ["#22c55e", "#e2e8f0"]; // Green for completed, light grey for pending
 
+const ANALYTICS_API_URL =
+  import.meta.env.VITE_ANALYTICS_API_URL ?? "http://localhost:30002/analytics";
+
 export default function AnalyticsOverview() {
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -32,7 +35,7 @@ export default function AnalyticsOverview() {
   useEffect(() => {
     // Analytics service runs independently on port 3001.
     axios
-      .get("http://localhost:3001/analytics")
+      .get(ANALYTICS_API_URL)
       .then((res) => {
         setData(res.data);
         setLoading(false);

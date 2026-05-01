@@ -5,7 +5,8 @@ import type { Task, TaskStatus } from "./componets/types";
 import TaskList from "./componets/taskList";
 import TaskForm from "./componets/taskform";
 
-const API_URL = "http://localhost:3000/task";
+const TASK_API_URL =
+  import.meta.env.VITE_TASK_API_URL ?? "http://localhost:30001/task";
 
 type TaskApiResponse = {
   tasks: Task[];
@@ -23,7 +24,7 @@ function App() {
     const fetchTasks = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${API_URL}?page=${currentPage}`);
+        const response = await axios.get(`${TASK_API_URL}?page=${currentPage}`);
         setTaskData(response.data);
       } catch (err) {
         console.error("Error fetching tasks", err);
@@ -41,7 +42,7 @@ function App() {
     status: TaskStatus,
   ) => {
     try {
-      const response = await axios.post(API_URL, {
+      const response = await axios.post(TASK_API_URL, {
         title,
         priority,
         status,
@@ -67,7 +68,7 @@ function App() {
     };
     const newStatus = nextStatusByStatus[task.status];
     try {
-      const response = await axios.patch(`${API_URL}/${task.id}`, {
+      const response = await axios.patch(`${TASK_API_URL}/${task.id}`, {
         ...task,
         status: newStatus,
       });
@@ -87,7 +88,7 @@ function App() {
   // DELETE
   const handleDeleteTask = async (taskId: string) => {
     try {
-      await axios.delete(`${API_URL}/${taskId}`);
+      await axios.delete(`${TASK_API_URL}/${taskId}`);
       if (taskData) {
         setTaskData({
           ...taskData,

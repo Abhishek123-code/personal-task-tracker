@@ -16,6 +16,16 @@ type TaskServiceResponse = {
   totalPages: number;
 };
 
+const getTaskServiceErrorMessage = (err: unknown) => {
+  if (axios.isAxiosError(err)) {
+    return err.response
+      ? `Task service responded with ${err.response.status}`
+      : err.message;
+  }
+
+  return err instanceof Error ? err.message : String(err);
+};
+
 analyticsRouter.get("/health", (_req, res) => {
   res.status(200).json({ status: "ok" });
 });
@@ -71,7 +81,9 @@ analyticsRouter.get("/analytics", async (req, res) => {
       tasksPerDay,
     });
   } catch (err) {
-    res.status(500).send("Error fetching task data: " + err);
+    res
+      .status(500)
+      .send(`Error fetching task data: ${getTaskServiceErrorMessage(err)}`);
   }
 });
 
