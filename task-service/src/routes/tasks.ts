@@ -74,7 +74,7 @@ taskRouter.delete("/task/:id", async (req, res) => {
       where: { id },
     });
 
-    res.status(204).send("Task deleted successfully");
+    res.status(204).json("Task deleted successfully");
   } catch (err) {
     res.status(400).send("Error deleting task");
   }
