@@ -11,8 +11,16 @@ type props = {
   taskData: TaskApiResponse | null;
   loading: boolean;
   onPageChange: (page: number) => void;
+  onToggleStatus: (task: Task) => void;
+  onDeleteTask: (taskId: string) => void;
 };
-const TaskList = ({ taskData, loading, onPageChange }: props) => {
+const TaskList = ({
+  taskData,
+  loading,
+  onPageChange,
+  onToggleStatus,
+  onDeleteTask,
+}: props) => {
   if (loading) {
     return (
       <div>
@@ -35,9 +43,6 @@ const TaskList = ({ taskData, loading, onPageChange }: props) => {
 
   const handlePrevPage = () => onPageChange(page - 1);
   const handleNextPage = () => onPageChange(page + 1);
-  {
-    console.log(page + " " + totalPages);
-  }
 
   return (
     <div>
@@ -51,10 +56,30 @@ const TaskList = ({ taskData, loading, onPageChange }: props) => {
       <ul className="space-y-3">
         {tasks.map((task) => (
           <li key={task.id} className="border-b border-slate-200 pb-3">
-            <h3 className="font-medium text-slate-800">{task.title}</h3>
-            <div className="flex items-center gap-4 text-sm text-slate-500 mt-1">
-              <span>Priority: {task.priority}</span>
-              <span>Status: {task.status}</span>
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h3 className="font-medium text-slate-800">{task.title}</h3>
+                <div className="flex items-center gap-4 text-sm text-slate-500 mt-1">
+                  <span>Priority: {task.priority}</span>
+                  <span>Status: {task.status}</span>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => onToggleStatus(task)}
+                  className="px-3 py-1 text-xs font-medium text-blue-700 bg-blue-50 rounded-md hover:bg-blue-100"
+                >
+                  Toggle
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onDeleteTask(task.id)}
+                  className="px-3 py-1 text-xs font-medium text-red-700 bg-red-50 rounded-md hover:bg-red-100"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </li>
         ))}

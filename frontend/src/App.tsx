@@ -1,9 +1,11 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import AnalyticsOverview from "./componets/analytics";
-import type { Task } from "./componets/types";
+import type { Task, TaskStatus } from "./componets/types";
 import TaskList from "./componets/taskList";
 import TaskForm from "./componets/taskform";
+
+const API_URL = "http://localhost:3000/task";
 
 type TaskApiResponse = {
   tasks: Task[];
@@ -21,9 +23,7 @@ function App() {
     const fetchTasks = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(
-          `http://localhost:3000/task?page=${currentPage}`,
-        );
+        const response = await axios.get(`${API_URL}?page=${currentPage}`);
         setTaskData(response.data);
       } catch (err) {
         console.error("Error fetching tasks", err);
@@ -33,6 +33,72 @@ function App() {
     };
     fetchTasks();
   }, [currentPage]);
+
+  // CREATE
+  const handleAddTask = async (
+    title: string,
+    priority: string,
+    status: TaskStatus,
+  ) => {
+    try {
+      const response = await axios.post(API_URL, {
+        title,
+        priority,
+        status,
+      });
+      if (taskData) {
+        setTaskData({
+          ...taskData,
+          tasks: [response.data, ...taskData.tasks],
+          totalTasks: taskData.totalTasks + 1,
+        });
+      }
+    } catch (error) {
+      console.error("Error adding task:", error);
+    }
+  };
+
+  // UPDATE
+  const handleToggleStatus = async (task: Task) => {
+    const nextStatusByStatus: Record<TaskStatus, TaskStatus> = {
+      TODO: "IN_PROGRESS",
+      IN_PROGRESS: "DONE",
+      DONE: "TODO",
+    };
+    const newStatus = nextStatusByStatus[task.status];
+    try {
+      const response = await axios.patch(`${API_URL}/${task.id}`, {
+        ...task,
+        status: newStatus,
+      });
+      if (taskData) {
+        setTaskData({
+          ...taskData,
+          tasks: taskData.tasks.map((t) =>
+            t.id === task.id ? response.data : t,
+          ),
+        });
+      }
+    } catch (error) {
+      console.error("Error updating task:", error);
+    }
+  };
+
+  // DELETE
+  const handleDeleteTask = async (taskId: string) => {
+    try {
+      await axios.delete(`${API_URL}/${taskId}`);
+      if (taskData) {
+        setTaskData({
+          ...taskData,
+          tasks: taskData.tasks.filter((t) => t.id !== taskId),
+          totalTasks: taskData.totalTasks - 1,
+        });
+      }
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 p-8 text-slate-800">
@@ -46,11 +112,13 @@ function App() {
       <main className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* LEFT COLUMN */}
         <section className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-          <TaskForm />
+          <TaskForm onAddTask={handleAddTask} />
           <TaskList
             taskData={taskData}
             loading={loading}
             onPageChange={setCurrentPage}
+            onToggleStatus={handleToggleStatus}
+            onDeleteTask={handleDeleteTask}
           />
         </section>
 

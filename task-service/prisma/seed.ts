@@ -16,7 +16,7 @@ async function main() {
 
   // Arrays to randomly pick from
   const priorities = [Priority.LOW, Priority.MEDIUM, Priority.HIGH];
-  const statuses = [Status.TODO, Status.IN_PROGRESS, Status.DONE];
+  const statuses = [Status.TODO, Status.DONE];
 
   const tasksToCreate: Prisma.TaskCreateManyInput[] = [];
 
