@@ -1,6 +1,18 @@
 version: '3.8'
 
 services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: task-tracker-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: taskdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
   task-service:
     build:
       context: ./task-service
@@ -10,6 +22,11 @@ services:
     env_file:
       # Reads your cluster connection string directly from your local .env file
       - ./task-service/.env
+    environment:
+      # Overrides the .env to use the internal Docker network hostname instead of localhost
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/taskdb?schema=public
+    depends_on:
+      - postgres
     restart: unless-stopped
 
   analytics-service:
@@ -36,3 +53,6 @@ services:
       - VITE_TASK_API_URL=http://localhost:3000/task
       - VITE_ANALYTICS_API_URL=http://localhost:3001/analytics
     restart: unless-stopped
+
+volumes:
+  postgres_data:

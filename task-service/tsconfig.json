@@ -16,7 +16,7 @@
     "types": ["node"],
     // and npm install -D @types/node
 
-    // Prisma / MongoDB compatibility
+    // Prisma compatibility
     "esModuleInterop": true,
     "ignoreDeprecations": "6.0",
 

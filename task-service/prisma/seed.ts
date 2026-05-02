@@ -26,7 +26,7 @@ async function main() {
       title: `Assessment Task ${i}: Review module requirements`,
       priority: priorities[Math.floor(Math.random() * priorities.length)]!,
       status: statuses[Math.floor(Math.random() * statuses.length)]!,
-      // We don't need to pass 'id' or 'createdAt' because Prisma/MongoDB generate those automatically!
+      // We don't need to pass 'id' or 'createdAt' because Prisma/SQL generate those automatically!
     });
   }
 
@@ -35,7 +35,7 @@ async function main() {
     data: tasksToCreate,
   });
 
-  console.log(`✅ Successfully seeded ${created.count} tasks into MongoDB!`);
+  console.log(`✅ Successfully seeded ${created.count} tasks into the database!`);
 }
 
 main()

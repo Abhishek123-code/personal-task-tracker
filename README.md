@@ -5,7 +5,7 @@ A small microservice-based task tracker with:
 - React/Vite frontend
 - Express task service
 - Express analytics service
-- MongoDB via Prisma
+- PostgreSQL via Prisma
 - Docker images for each app
 - Kubernetes manifests for local deployment
 
@@ -17,7 +17,7 @@ A small microservice-based task tracker with:
 
 ```text
 frontend/             React dashboard
-task-service/         Task API, Prisma, MongoDB
+task-service/         Task API, Prisma, PostgreSQL
 analytics-service/    Analytics API that reads from task-service
 k8s-manifests/        Kubernetes Deployment and Service manifests
 ```
@@ -30,25 +30,53 @@ Install:
 - Docker
 - Kubernetes locally, for example Docker Desktop Kubernetes
 - kubectl
-- A MongoDB connection string
+- A PostgreSQL connection string
 
-If you use MongoDB Atlas, make sure your current IP address is allowed in Atlas Network Access.
+If you use a hosted database, make sure your current IP address is allowed.
 
 ## Environment Setup
 
-Create a local environment file for the task service:
+Create local environment files for the services:
 
 ```bash
+# Task Service
 cp task-service/.env.example task-service/.env
+
+# Frontend
+cp frontend/.env.example frontend/.env
 ```
 
-Edit `task-service/.env`:
+The default values in both `.env.example` files are already configured to work locally:
 
+`task-service/.env`:
 ```bash
-DATABASE_URL=mongodb+srv://USER:PASSWORD@HOST/taskService?retryWrites=true&w=majority
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/taskdb?schema=public"
 ```
 
-Do not commit `.env`. It is ignored by Git.
+`frontend/.env`:
+```bash
+VITE_TASK_API_URL=http://localhost:3000/task
+VITE_ANALYTICS_API_URL=http://localhost:3001/analytics
+```
+
+Do not commit your `.env` files. They are ignored by Git to keep your secrets safe.
+
+## Database Initialization
+
+Before running the application for the first time, you must initialize the PostgreSQL database schema.
+
+If you are using Docker Compose, first start only the database:
+```bash
+docker compose up -d postgres
+```
+
+Then, push the schema to the database (ensure you are in the `task-service` directory):
+```bash
+cd task-service
+npm install
+npx prisma db push
+cd ..
+```
 
 ## Run Locally Without Kubernetes
 
@@ -122,7 +150,9 @@ The `.dockerignore` files keep `node_modules`, `dist`, generated files, and `.en
 
 ## Run Locally with Docker Compose
 
-You can easily run the entire stack (including a local MongoDB database) without manually configuring environment variables using Docker Compose:
+*Note: Ensure you have run the Database Initialization steps above before starting the full stack, otherwise the API containers might fail to query the database.*
+
+You can easily run the entire stack (including a local PostgreSQL database) without manually configuring environment variables using Docker Compose:
 
 ```bash
 docker compose up --build
