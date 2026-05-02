@@ -1,23 +1,6 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:15-alpine
-    container_name: task-tracker-postgres
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: taskdb
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d taskdb"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
   task-service:
     build:
       context: ./task-service
@@ -25,10 +8,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/taskdb?schema=public
-    depends_on:
-      postgres:
-        condition: service_healthy
+      - DATABASE_URL=postgresql://postgres:postgres123@task-tracker-db.c7e2oqegkpj1.ap-south-1.rds.amazonaws.com:5432/taskdb
     restart: unless-stopped
 
   analytics-service:
@@ -50,9 +30,6 @@ services:
     ports:
       - "5173:5173"
     environment:
-      - VITE_TASK_API_URL=http://localhost:3000/task
-      - VITE_ANALYTICS_API_URL=http://localhost:3001/analytics
+      - VITE_TASK_API_URL=http://43.204.215.248:3000/task
+      - VITE_ANALYTICS_API_URL=http://43.204.215.248:3001/analytics
     restart: unless-stopped
-
-volumes:
-  postgres_data:
