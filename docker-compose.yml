@@ -12,6 +12,11 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d taskdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   task-service:
     build:
@@ -19,14 +24,11 @@ services:
     container_name: task-tracker-task-service
     ports:
       - "3000:3000"
-    env_file:
-      # Reads your cluster connection string directly from your local .env file
-      - ./task-service/.env
     environment:
-      # Overrides the .env to use the internal Docker network hostname instead of localhost
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/taskdb?schema=public
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     restart: unless-stopped
 
   analytics-service:
@@ -36,7 +38,6 @@ services:
     ports:
       - "3001:3001"
     environment:
-      # Uses the internal Docker network to reach the task-service directly
       - TASK_SERVICE_URL=http://task-service:3000
     depends_on:
       - task-service
@@ -49,7 +50,6 @@ services:
     ports:
       - "5173:5173"
     environment:
-      # Must use localhost since these URLs are accessed by the user's browser, not internally
       - VITE_TASK_API_URL=http://localhost:3000/task
       - VITE_ANALYTICS_API_URL=http://localhost:3001/analytics
     restart: unless-stopped
