@@ -63,20 +63,23 @@ Do not commit your `.env` files. They are ignored by Git to keep your secrets sa
 
 ## Database Initialization
 
-Before running the application for the first time, you must initialize the PostgreSQL database schema.
+Before running the application locally for the first time (without Docker Compose or Kubernetes), you must initialize the PostgreSQL database schema and seed the initial data.
 
-If you are using Docker Compose, first start only the database:
+If you need a local database, you can start just the PostgreSQL container:
 ```bash
 docker compose up -d postgres
 ```
 
-Then, push the schema to the database (ensure you are in the `task-service` directory):
+Then, push the schema and seed the database (ensure you are in the `task-service` directory):
 ```bash
 cd task-service
 npm install
 npx prisma db push
+npx prisma db seed
 cd ..
 ```
+
+*Note: When running via Docker Compose (`docker compose up --build`) or Kubernetes, the `task-service` container automatically handles pushing the schema and seeding the database on startup. You do not need to run these steps manually.*
 
 ## Run Locally Without Kubernetes
 
@@ -149,8 +152,6 @@ docker build -t frontend:latest ./frontend
 The `.dockerignore` files keep `node_modules`, `dist`, generated files, and `.env` out of the Docker build context.
 
 ## Run Locally with Docker Compose
-
-*Note: Ensure you have run the Database Initialization steps above before starting the full stack, otherwise the API containers might fail to query the database.*
 
 You can easily run the entire stack (including a local PostgreSQL database) without manually configuring environment variables using Docker Compose:
 
