@@ -14,4 +14,4 @@ RUN npm run build
 
 RUN cp -r /app/src/generated /app/dist/generated
 
-CMD ["sh", "-c", "npx prisma db push && npm start"]
+CMD ["sh", "-c", "npx prisma db push && npx prisma db seed && npm start"]
